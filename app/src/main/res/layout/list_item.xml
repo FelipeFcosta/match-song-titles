@@ -12,7 +12,8 @@
         android:paddingEnd="16dp"
         android:paddingStart="0dp"
         android:textStyle="bold"
-        android:text="0"
+        android:text="9"
+        android:gravity="center"
         android:textSize="32sp" />
 
     <TextView

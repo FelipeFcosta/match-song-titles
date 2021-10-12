@@ -42,20 +42,12 @@ class SimilarityScore {
         }
 
         /**
-         * Verifica se a posição [pos] está fora dos limites para alguma das 2 palavras
-         */
-        private fun isPosOutOfBounds(str1: String, str2: String, pos: Int) : Boolean {
-            return pos >= str1.length || pos >= str2.length
-        }
-
-        /**
-         * Contabiliza as letras que são iguais
+         * Contabiliza as letras idênticas
          * @return score obtido através do casamento entre as letras das palavras
          */
         private fun matchLetters(str1: String, str2: String): Int {
             var score = 0
             var charPos = 0 // posição da letra das palavras
-            // Enquanto a posição da letra estiver dentro dos limites das palavras
             while (!isPosOutOfBounds(str1, str2, charPos)) {
                 if (str1[charPos] == str2[charPos]) {
                     score += LETTER_EQUALS_POINTS
@@ -63,6 +55,13 @@ class SimilarityScore {
                 charPos++
             }
             return score
+        }
+
+        /**
+         * Verifica se a posição [pos] está fora dos limites para alguma das 2 palavras
+         */
+        private fun isPosOutOfBounds(str1: String, str2: String, pos: Int) : Boolean {
+            return pos >= str1.length || pos >= str2.length
         }
     }
 }

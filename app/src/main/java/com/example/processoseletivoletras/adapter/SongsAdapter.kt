@@ -20,6 +20,7 @@ class SongsAdapter(
     private val songItems: List<SongItem>
 ) : RecyclerView.Adapter<SongsAdapter.ItemViewHolder>(), Filterable {
 
+
     companion object {
         private const val NUM_DISPLAY_SONGS = 10
     }
@@ -30,25 +31,41 @@ class SongsAdapter(
     // lista das músicas que vão aparecer na tela
     private var songsToDisplay = ArrayList<SongItem>()
 
+    // largura máxima da textview que mostra o score, para
+    // todas as textviews estejam alinhadas
+    private var maxWidth: Int = 0
+
+
     // ViewHolder representa um list_item view
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textScore: TextView = view.findViewById(com.example.processoseletivoletras.R.id.score)
-        val textTitle: TextView = view.findViewById(com.example.processoseletivoletras.R.id.title)
+        val tvScore: TextView = view.findViewById(com.example.processoseletivoletras.R.id.score)
+        val tvTitle: TextView = view.findViewById(com.example.processoseletivoletras.R.id.title)
     }
 
     // Cria novas views list_item (chamado pelo layout manager)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        val resListItem = com.example.processoseletivoletras.R.layout.list_item
+
         val adapterLayout = LayoutInflater.from(parent.context)
-            .inflate(com.example.processoseletivoletras.R.layout.list_item, parent, false)
+            .inflate(resListItem, parent, false)
 
         return ItemViewHolder(adapterLayout)
     }
 
+
     // Substitui o conteúdo de uma view (chamado pelo layout manager)
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = songsToDisplay[position]
-        holder.textScore.text = item.score.toString()
-        holder.textTitle.text = item.title
+        holder.tvTitle.text = item.title
+        holder.tvScore.text = item.score.toString()
+
+        // guardar a maior largura (do primeiro tvScore)
+        if (position == 0) {
+            holder.tvScore.measure(0, 0)
+            maxWidth = holder.tvScore.measuredWidth
+        }
+        // atribuir a largura do primeiro tvScore aos demais textviews de score
+        holder.tvScore.layoutParams.width = maxWidth
     }
 
     // Retorna o tamanho do dataset (chamado pelo layout manager)
