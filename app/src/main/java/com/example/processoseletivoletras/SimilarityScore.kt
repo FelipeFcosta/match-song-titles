@@ -2,6 +2,9 @@ package com.example.processoseletivoletras
 
 class SimilarityScore {
     companion object {
+        private const val WORD_EQUALS_POINTS = 10
+        private const val LETTER_EQUALS_POINTS = 1
+        private const val CONTAINS_FEAT_POINTS = -5
 
         /**
          * Compara cada palavra da busca (query) com cada palavra do nome da música e calcula
@@ -18,30 +21,19 @@ class SimilarityScore {
             val titleWords = songTitle.split("\\s+".toRegex())
             val queryWords = query.split("\\s+".toRegex())
 
-            var charPos = 0 // posição da letra das palavras
-            for ((qWordIdx, queryWord) in queryWords.withIndex()) { // para cada palavra da busca
-                for (titleWord in titleWords) {                     // para cada palavra da música
-
-                    // Contabiliza de palavras idênticas, se são iguais, já pulamos para
-                    // a próxima palavra após incrementar o score
+            for ((qWordIdx, queryWord) in queryWords.withIndex()) {
+                for (titleWord in titleWords) {
+                    // Contabilização de palavras idênticas
                     if (queryWord == titleWord) {
-                        score += PONTOS_PALAVRA_IGUAL + queryWord.length
+                        score += WORD_EQUALS_POINTS + queryWord.length
                     } else {
-                        // Enquanto a posição da letra estiver dentro dos limites das palavras,
-                        // contabilizamos as letras que são iguais
-                        while (!isOutOfBounds(titleWord, queryWord, charPos)) {
-                            if (queryWord[charPos] == titleWord[charPos]) {
-                                score += PONTOS_LETRA_IGUAL
-                            }
-                            charPos++
-                        }
+                        // Contabilização de letras
+                        score += matchLetters(queryWord, titleWord)
 
-                        // Contabilização de 'feat' (apenas na primeira iteração,
-                        // para não contabilizar excessivamente)
+                        // Contabilização de 'feat' (apenas na primeira iteração)
                         if (qWordIdx == 0 && titleWord == "feat") {
-                            score += PONTOS_CONTEM_FEAT
+                            score += CONTAINS_FEAT_POINTS
                         }
-                        charPos = 0
                     }
                 }
             }
@@ -50,13 +42,27 @@ class SimilarityScore {
         }
 
         /**
-         * Verifica se a posição [pos] está fora dos limites para alguma das palavras
-         * @param str1 primeira palavra
-         * @param str2 segunda palavra
-         * @param pos posição da letra
+         * Verifica se a posição [pos] está fora dos limites para alguma das 2 palavras
          */
-        private fun isOutOfBounds(str1: String, str2: String, pos: Int) : Boolean {
+        private fun isPosOutOfBounds(str1: String, str2: String, pos: Int) : Boolean {
             return pos >= str1.length || pos >= str2.length
+        }
+
+        /**
+         * Contabiliza as letras que são iguais
+         * @return score obtido através do casamento entre as letras das palavras
+         */
+        private fun matchLetters(str1: String, str2: String): Int {
+            var score = 0
+            var charPos = 0 // posição da letra das palavras
+            // Enquanto a posição da letra estiver dentro dos limites das palavras
+            while (!isPosOutOfBounds(str1, str2, charPos)) {
+                if (str1[charPos] == str2[charPos]) {
+                    score += LETTER_EQUALS_POINTS
+                }
+                charPos++
+            }
+            return score
         }
     }
 }

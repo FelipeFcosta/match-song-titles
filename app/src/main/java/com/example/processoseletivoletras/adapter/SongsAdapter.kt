@@ -7,20 +7,24 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.processoseletivoletras.NUM_DISPLAY_SONGS
 import com.example.processoseletivoletras.SimilarityScore
 import com.example.processoseletivoletras.model.SongItem
 import com.example.processoseletivoletras.removeAccents
 import kotlin.collections.ArrayList
 
 
-// SongsAdapter transforma a lista de objetos (songItems) em views list_item com
-// os dados das músicas
+/**
+ * Adapter para o [RecyclerView] na [MainActivity]. Exibe um objeto de dados [SongItem].
+ */
 class SongsAdapter(
     private val songItems: List<SongItem>
 ) : RecyclerView.Adapter<SongsAdapter.ItemViewHolder>(), Filterable {
 
-    // guarda todos os nomes das músicas já tratadas
+    companion object {
+        private const val NUM_DISPLAY_SONGS = 10
+    }
+
+    // lista de todos os nomes das músicas já tratadas
     private var normalizedTitles = songItems.map { it.title.removeAccents().lowercase() }
 
     // lista das músicas que vão aparecer na tela
@@ -86,7 +90,7 @@ class SongsAdapter(
                         songItem.score = SimilarityScore.matchSongTitle(normalizedTitles[idx], input)
                         filteredSongs.add(songItem)
                     }
-                    // ordena os músicas por score em ordem decrescente e pegar os n primeiros
+                    // ordena os músicas em ordem decrescente de score e pega os n primeiros
                     filteredSongs.sortByDescending { songItem -> songItem.score }
                     filteredSongs = filteredSongs.take(n) as ArrayList<SongItem>
                 }
