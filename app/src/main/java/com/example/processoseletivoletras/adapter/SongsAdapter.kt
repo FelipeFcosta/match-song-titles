@@ -20,7 +20,6 @@ class SongsAdapter(
     private val songItems: List<SongItem>
 ) : RecyclerView.Adapter<SongsAdapter.ItemViewHolder>(), Filterable {
 
-
     companion object {
         private const val NUM_DISPLAY_SONGS = 10
     }
@@ -31,9 +30,9 @@ class SongsAdapter(
     // lista das músicas que vão aparecer na tela
     private var songsToDisplay = ArrayList<SongItem>()
 
-    // largura máxima da textview que mostra o score, para
-    // todas as textviews estejam alinhadas
-    private var maxWidth: Int = 0
+    // largura da textview que mostra o maior score (maior número de dígitos)
+    // usamos esse valor para alinhar todas as textviews
+    private var maxTvScore: Int = 0
 
 
     // ViewHolder representa um list_item view
@@ -52,7 +51,6 @@ class SongsAdapter(
         return ItemViewHolder(adapterLayout)
     }
 
-
     // Substitui o conteúdo de uma view (chamado pelo layout manager)
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = songsToDisplay[position]
@@ -62,10 +60,10 @@ class SongsAdapter(
         // guardar a maior largura (do primeiro tvScore)
         if (position == 0) {
             holder.tvScore.measure(0, 0)
-            maxWidth = holder.tvScore.measuredWidth
+            maxTvScore = holder.tvScore.measuredWidth
         }
-        // atribuir a largura do primeiro tvScore aos demais textviews de score
-        holder.tvScore.layoutParams.width = maxWidth
+        // atribuir a largura do primeiro tvScore a todos textviews de score
+        holder.tvScore.layoutParams.width = maxTvScore
     }
 
     // Retorna o tamanho do dataset (chamado pelo layout manager)
@@ -92,28 +90,28 @@ class SongsAdapter(
                 songsToDisplay.addAll(results?.values as ArrayList<SongItem>)
                 notifyDataSetChanged()
             }
-
-            /**
-             * @param input Entrada do usuário na barra de pesquisa
-             * @param n Quantidade de SongItems a serem retornados
-             * @return Lista dos [n] SongItems com os maiores scores
-             */
-            fun getFilteredSongItems(input: String, n: Int): ArrayList<SongItem> {
-                var filteredSongs = ArrayList<SongItem>()
-
-                if (input.isNotEmpty()) {
-                    // calcula o score de cada música da lista e adiciona à lista filtrada
-                    for ((idx, songItem) in songItems.withIndex()) {
-                        songItem.score = SimilarityScore.matchSongTitle(normalizedTitles[idx], input)
-                        filteredSongs.add(songItem)
-                    }
-                    // ordena os músicas em ordem decrescente de score e pega os n primeiros
-                    filteredSongs.sortByDescending { songItem -> songItem.score }
-                    filteredSongs = filteredSongs.take(n) as ArrayList<SongItem>
-                }
-
-                return filteredSongs
-            }
         }
+    }
+
+
+    /**
+     * @param input Entrada do usuário na barra de pesquisa
+     * @param n Quantidade de SongItems a serem retornados
+     * @return Lista dos [n] SongItems com os maiores scores
+     */
+    fun getFilteredSongItems(input: String, n: Int): ArrayList<SongItem> {
+        var filteredSongs = ArrayList<SongItem>()
+
+        if (input.isNotEmpty()) {
+            // calcula o score de cada música da lista e adiciona à lista filtrada
+            for ((idx, songItem) in songItems.withIndex()) {
+                songItem.score = SimilarityScore.matchSongTitle(normalizedTitles[idx], input)
+                filteredSongs.add(songItem)
+            }
+            filteredSongs.sortByDescending { songItem -> songItem.score }
+            filteredSongs = filteredSongs.take(n) as ArrayList<SongItem>
+        }
+
+        return filteredSongs
     }
 }

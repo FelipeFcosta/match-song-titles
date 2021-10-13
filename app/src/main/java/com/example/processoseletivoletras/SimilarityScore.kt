@@ -17,7 +17,7 @@ class SimilarityScore {
         fun matchSongTitle(songTitle: String, query: String): Int {
             var score = 0
 
-            // guarda as palavras em um Array (separadas por um ou mais espaços em branco)
+            // obter as palavras (separadas por um ou mais espaços em branco)
             val titleWords = songTitle.split("\\s+".toRegex())
             val queryWords = query.split("\\s+".toRegex())
 
@@ -42,12 +42,12 @@ class SimilarityScore {
         }
 
         /**
-         * Contabiliza as letras idênticas
+         * Contabiliza as letras idênticas na mesma posição
          * @return score obtido através do casamento entre as letras das palavras
          */
         private fun matchLetters(str1: String, str2: String): Int {
             var score = 0
-            var charPos = 0 // posição da letra das palavras
+            var charPos = 0
             while (!isPosOutOfBounds(str1, str2, charPos)) {
                 if (str1[charPos] == str2[charPos]) {
                     score += LETTER_EQUALS_POINTS

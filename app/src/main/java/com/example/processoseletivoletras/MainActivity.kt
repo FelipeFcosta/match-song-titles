@@ -1,6 +1,7 @@
 package com.example.processoseletivoletras
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.processoseletivoletras.adapter.SongsAdapter
@@ -67,5 +68,18 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        // esconde teclado ao rolar a lista
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy != 0)
+                    hideKeyboard()
+            }
+        })
     }
+
+    fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+    }
+
 }
