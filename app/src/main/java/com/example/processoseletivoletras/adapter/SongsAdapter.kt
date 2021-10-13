@@ -62,8 +62,10 @@ class SongsAdapter(
             holder.tvScore.measure(0, 0)
             maxTvScore = holder.tvScore.measuredWidth
         }
-        // atribuir a largura do primeiro tvScore a todos textviews de score
-        holder.tvScore.layoutParams.width = maxTvScore
+        // atribuir a largura do primeiro tvScore aos demais textviews de score
+        val layoutParams = holder.tvScore.layoutParams
+        layoutParams.width = maxTvScore
+        holder.tvScore.layoutParams = layoutParams
     }
 
     // Retorna o tamanho do dataset (chamado pelo layout manager)
