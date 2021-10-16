@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:text="9"
         android:gravity="center"
-        android:textSize="32sp" />
+        android:textSize="28sp" />
 
     <TextView
         android:id="@+id/title"
@@ -23,6 +23,6 @@
         android:maxLines="1"
         android:layout_height="wrap_content"
         android:text="Titulo de uma musica"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>
